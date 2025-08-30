@@ -1,0 +1,3 @@
+Hello, this is sample how google doc workd.
+carefully go thorugh every part of code
+	Indented text[Image: shreyas.jpg]

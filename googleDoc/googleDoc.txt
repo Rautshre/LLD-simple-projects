@@ -1,0 +1,107 @@
+1. Problem Modeled
+
+You’re trying to mimic Google Docs-like editor in a simple way:
+
+A Document consists of multiple elements (Text, Image, NewLine, TabSpace).
+
+A DocumentEditor allows users to add elements, render the document, and save it.
+
+Different storage strategies (FileStorage, DBStorage) decide where to save the document.
+
+2. Key OOD/LLD Principles Used
+✅ Abstraction
+
+DocumentElement is an abstract class with render().
+→ It hides the details of how text, image, newline, etc., are represented.
+
+Persistence is another abstract class with save().
+→ It hides the details of saving (file vs DB).
+
+✅ Inheritance (IS-A)
+
+TextElement, ImageElement, NewLineElement, TabSpaceElement all inherit from DocumentElement.
+→ They override render() to define their own rendering behavior.
+
+FileStorage and DBStorage inherit from Persistence and implement save() differently.
+
+✅ Polymorphism
+
+When iterating over documentElements, the program calls ele->render().
+→ Based on the actual object type (TextElement, ImageElement), the correct function runs.
+
+Same for storage: storage->save() could call File saving or DB saving depending on which object is passed.
+
+✅ Single Responsibility Principle (SRP)
+
+DocumentElement hierarchy: deals only with representing different document parts.
+
+Document: only maintains and renders elements.
+
+Persistence: only responsible for saving data.
+
+DocumentEditor: acts as a facade to connect everything (editing + saving).
+
+Each class has a clear single responsibility.
+
+✅ Open/Closed Principle (OCP)
+
+You can add new elements (like TableElement, HeaderElement) without changing existing code—just extend DocumentElement.
+
+You can add new saving strategies (like CloudStorage) by extending Persistence.
+
+Your system is open for extension, closed for modification.
+
+✅ Dependency Inversion Principle (DIP)
+
+DocumentEditor depends on the abstraction Persistence, not a specific implementation.
+→ You can swap FileStorage with DBStorage without modifying DocumentEditor.
+
+3. Class Relationships
+
+Composition: Document has-a collection of DocumentElement*.
+
+Aggregation: DocumentEditor has a Document and a Persistence.
+
+Strategy Pattern: Persistence implementations define different saving strategies.
+
+So, this design demonstrates Composite + Strategy Pattern ideas.
+
+4. Flow of Usage
+
+User interacts with DocumentEditor.
+
+DocumentEditor adds different DocumentElement objects to Document.
+
+Document renders all elements into a single string using polymorphism.
+
+DocumentEditor calls Persistence->save() to persist the document.
+
+5. Improvements for Future
+
+Use smart pointers (unique_ptr / shared_ptr) → Avoid memory leaks.
+
+Apply Builder Pattern for creating complex documents.
+
+Add Undo/Redo functionality → Use Command Pattern.
+
+Use Factory Pattern for creating DocumentElements dynamically.
+
+📝 One-Line Takeaway
+
+This code is a mini LLD for a Document Editor that shows:
+
+Abstraction + Polymorphism for document parts and saving strategies,
+
+SRP, OCP, DIP from SOLID,
+
+and a hint of Strategy + Composite Pattern.
+
+👉 Next time you read the code, think like this:
+
+Document = data structure (Composite).
+
+Elements = polymorphic components (Abstraction).
+
+Persistence = strategy for saving (Strategy Pattern).
+
+Editor = Facade/Orchestrator.
